@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+message Todo {
+    int32 id = 1;     //The order of the field
+    string title = 2;
+    bool completed = 3;
+  
+}
+
+message GetTodoByIdRequest {
+    int32 id = 1;
+}
+
+
+service TodoService {
+  rpc getTodo(GetTodoByIdRequest) returns (Todo);
+  //Bidirectional comunication between client and server
+  rpc getTodoStream (GetTodoByIdRequest) returns (stream Todo);
+
+  //You can also stream from client to server, initialize the stream in the frontend and then streaming information to the backend.
+  
+}
+
