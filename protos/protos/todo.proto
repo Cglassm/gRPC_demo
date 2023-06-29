@@ -1,23 +1,50 @@
 syntax = "proto3";
 
+//Aca va lo que quiero comunicar entre el cliente y el servidor 
+//se estan mandando Todos al cliente 
 message Todo {
-    int32 id = 1;     //The order of the field
+    int32 id = 1;     //El orden de los campos es importante
     string title = 2;
     bool completed = 3;
   
 }
 
+//Mensaje que se debera especificar en las requests
 message GetTodoByIdRequest {
     int32 id = 1;
 }
 
+//Del cliente voy a obtener algo del server
+
+
+//gRPC y protocol buffers permiten definir servicios que serán esencialmente 
+//todos los métodos que nos gustaría llamar desde el cliente al servidor, 
+//Es como una interfaz que se debe implementar.
 
 service TodoService {
+
+  //Cada vez que se agrega un modelo hay que correr el comando con el compilador de protoc.
+  //protoc --dart_out=grpc:lib/src/generated -Iprotos protos/*
+  //Lo que hace es mirar todos los .protos files y autogenera las clases
+
+
+  //En una api REST esto seria como un GET
   rpc getTodo(GetTodoByIdRequest) returns (Todo);
   //Bidirectional comunication between client and server
+
+  //Ventaja que brinda grpc, se puede hacer streaming de datos. 
+  //En este caso cuando el server quiera enviar un TODO al cliente, lo va a hacer a traves de un stream.
+  //Se debe agregar el stream en el mensaje de respuesta
   rpc getTodoStream (GetTodoByIdRequest) returns (stream Todo);
 
-  //You can also stream from client to server, initialize the stream in the frontend and then streaming information to the backend.
+  //Se si quiere hacer un stream desde el cliente seria asi:
+  //Initializar el stream en el frontend y luego enviar los datos al backend
+  // rpc getTodoStream (stream GetTodoByIdRequest) returns (Todo);
+
+  //Se puede hacer un stream bidireccional
+  // rpc getTodoStream (stream GetTodoByIdRequest) returns (stream Todo);
+
+
   
 }
 
